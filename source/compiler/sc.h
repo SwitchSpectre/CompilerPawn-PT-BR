@@ -573,9 +573,11 @@ int pc_geterrorwarnings();
 
 /* general console output */
 int pc_printf(const char *message,...);
+int pc_wprintf(const wchar_t *message,...);
 
 /* error report function */
 int pc_error(int number,char *message,char *filename,int firstline,int lastline,va_list argptr);
+int pc_werror(int number,wchar_t *message,char *filename,int firstline,int lastline,va_list argptr);
 
 /* input from source file */
 void *pc_opensrc(char *filename); /* reading only */

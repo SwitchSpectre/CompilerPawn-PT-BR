@@ -23,6 +23,7 @@
  */
 
 #include <assert.h>
+#include <wchar.h>
 #if defined	__WIN32__ || defined _WIN32 || defined __MSDOS__
   #include <io.h>
 #endif
@@ -39,169 +40,169 @@
 #endif
 #include "sc.h"
 
-static char *errmsg[] = {
-/*001*/  "expected token: \"%s\", but found \"%s\"\n",
-/*002*/  "only a single statement (or expression) can follow each \"case\"\n",
-/*003*/  "declaration of a local variable must appear in a compound block\n",
-/*004*/  "function \"%s\" is not implemented\n",
-/*005*/  "function may not have arguments\n",
-/*006*/  "must be assigned to an array\n",
-/*007*/  "operator cannot be redefined\n",
-/*008*/  "must be a constant expression; assumed zero\n",
-/*009*/  "invalid array size (negative, zero or out of bounds)\n",
-/*010*/  "invalid function or declaration\n",
-/*011*/  "stack offset/data address must be a multiple of cell size\n",
-/*012*/  "invalid function call, not a valid address\n",
-/*013*/  "no entry point (no public functions)\n",
-/*014*/  "invalid statement; not in switch\n",
-/*015*/  "\"default\" case must be the last case in switch statement\n",
-/*016*/  "multiple defaults in \"switch\"\n",
-/*017*/  "undefined symbol \"%s\"\n",
-/*018*/  "initialization data exceeds declared size\n",
-/*019*/  "not a label: \"%s\"\n",
-/*020*/  "invalid symbol name \"%s\"\n",
-/*021*/  "symbol already defined: \"%s\"\n",
-/*022*/  "must be lvalue (non-constant)\n",
-/*023*/  "array assignment must be simple assignment\n",
-/*024*/  "\"break\" or \"continue\" is out of context\n",
-/*025*/  "function heading differs from prototype\n",
-/*026*/  "no matching \"#if...\"\n",
-/*027*/  "invalid character constant\n",
-/*028*/  "invalid subscript (not an array or too many subscripts): \"%s\"\n",
-/*029*/  "invalid expression, assumed zero\n",
-/*030*/  "compound statement not closed at the end of file (started at line %d)\n",
-/*031*/  "unknown directive\n",
-/*032*/  "array index out of bounds (variable \"%s\")\n",
-/*033*/  "array must be indexed (variable \"%s\")\n",
-/*034*/  "argument does not have a default value (argument %d)\n",
-/*035*/  "argument type mismatch (argument %d)\n",
-/*036*/  "empty statement\n",
-/*037*/  "invalid string (possibly non-terminated string)\n",
-/*038*/  "extra characters on line\n",
-/*039*/  "constant symbol has no size\n",
-/*040*/  "duplicate \"case\" label (value %d)\n",
-/*041*/  "invalid ellipsis, array size is not known\n",
-/*042*/  "invalid combination of class specifiers\n",
-/*043*/  "character constant exceeds range for packed string\n",
-/*044*/  "positional parameters must precede all named parameters\n",
-/*045*/  "too many function arguments\n",
-/*046*/  "unknown array size (variable \"%s\")\n",
-/*047*/  "array sizes do not match, or destination array is too small\n",
-/*048*/  "array dimensions do not match\n",
-/*049*/  "invalid line continuation\n",
-/*050*/  "invalid range\n",
-/*051*/  "invalid subscript, use \"[ ]\" operators on major dimensions\n",
-/*052*/  "multi-dimensional arrays must be fully initialized\n",
-/*053*/  "exceeding maximum number of dimensions\n",
-/*054*/  "unmatched closing brace (\"}\")\n",
-/*055*/  "start of function body without function header\n",
-/*056*/  "arrays, local variables and function arguments cannot be public (variable \"%s\")\n",
-/*057*/  "unfinished expression before compiler directive\n",
-/*058*/  "duplicate argument; same argument is passed twice\n",
-/*059*/  "function argument may not have a default value (variable \"%s\")\n",
-/*060*/  "multiple \"#else\" directives between \"#if ... #endif\"\n",
-/*061*/  "\"#elseif\" directive follows an \"#else\" directive\n",
-/*062*/  "number of operands does not fit the operator\n",
-/*063*/  "function result tag of operator \"%s\" must be \"%s\"\n",
-/*064*/  "cannot change predefined operators\n",
-/*065*/  "function argument may only have a single tag (argument %d)\n",
-/*066*/  "function argument may not be a reference argument or an array (argument \"%s\")\n",
-/*067*/  "variable cannot be both a reference and an array (variable \"%s\")\n",
-/*068*/  "invalid rational number precision in #pragma\n",
-/*069*/  "rational number format already defined\n",
-/*070*/  "rational number support was not enabled\n",
-/*071*/  "user-defined operator must be declared before use (function \"%s\")\n",
-/*072*/  "\"sizeof\" operator is invalid on \"function\" symbols\n",
-/*073*/  "function argument must be an array (argument \"%s\")\n",
-/*074*/  "#define pattern must start with an alphabetic character\n",
-/*075*/  "input line too long (after substitutions)\n",
-/*076*/  "syntax error in the expression, or invalid function call\n",
-/*077*/  "malformed UTF-8 encoding, or corrupted file: %s\n",
-/*078*/  "function uses both \"return\" and \"return <value>\"\n",
-/*079*/  "inconsistent return types (array & non-array)\n",
-/*080*/  "unknown symbol, or not a constant symbol (symbol \"%s\")\n",
-/*081*/  "cannot take a tag as a default value for an indexed array parameter (symbol \"%s\")\n",
-/*082*/  "user-defined operators and native functions may not have states\n",
-/*083*/  "a function or variable may only belong to a single automaton (symbol \"%s\")\n",
-/*084*/  "state conflict: one of the states is already assigned to another implementation (symbol \"%s\")\n",
-/*085*/  "no states are defined for symbol \"%s\"\n",
-/*086*/  "unknown automaton \"%s\"\n",
-/*087*/  "unknown state \"%s\" for automaton \"%s\"\n",
-/*088*/  "public variables and local variables may not have states (symbol \"%s\")\n",
-/*089*/  "state variables may not be initialized (symbol \"%s\")\n",
-/*090*/  "public functions may not return arrays (symbol \"%s\")\n",
-/*091*/  "ambiguous constant; tag override is required (symbol \"%s\")\n",
-/*092*/  "functions may not return arrays of unknown size (symbol \"%s\")\n",
-/*093*/  "\"__addressof\" operator is invalid in preprocessor expressions\n"
+static wchar_t *errmsg[] = {
+/*001*/  L"token esperado: \"%s\", mas encontrado \"%s\"\n",
+/*002*/  L"apenas uma única instrução (ou expressão) pode seguir cada \"case\"\n",
+/*003*/  L"declaração de uma variável local deve aparecer em um bloco composto\n",
+/*004*/  L"função \"%s\" não está implementada\n",
+/*005*/  L"a função não pode ter argumentos\n",
+/*006*/  L"deve ser atribuído a um array\n",
+/*007*/  L"o operador não pode ser redefinido\n",
+/*008*/  L"deve ser uma expressão constante; assumido como zero\n",
+/*009*/  L"tamanho do array inválido (negativo, zero ou fora dos limites)\n",
+/*010*/  L"função ou declaração inválida\n",
+/*011*/  L"deslocamento/endereçamento de dados da pilha deve ser um múltiplo do tamanho da célula\n",
+/*012*/  L"chamada de função inválida, não é um endereço válido\n",
+/*013*/  L"nenhum ponto de entrada (nenhuma função pública)\n",
+/*014*/  L"instrução inválida; não está no switch\n",
+/*015*/  L"o caso \"default\" deve ser o último caso na instrução switch\n",
+/*016*/  L"múltiplos defaults no \"switch\"\n",
+/*017*/  L"símbolo indefinido \"%s\"\n",
+/*018*/  L"dados de inicialização excedem o tamanho declarado\n",
+/*019*/  L"não é um rótulo: \"%s\"\n",
+/*020*/  L"nome de símbolo inválido \"%s\"\n",
+/*021*/  L"símbolo já definido: \"%s\"\n",
+/*022*/  L"deve ser um lvalue (não constante)\n",
+/*023*/  L"atribuição de array deve ser uma atribuição simples\n",
+/*024*/  L"\"break\" ou \"continue\" está fora de contexto\n",
+/*025*/  L"cabeça da função difere do protótipo\n",
+/*026*/  L"nenhum \"#if...\" correspondente\n",
+/*027*/  L"constante de caractere inválida\n",
+/*028*/  L"subscrito inválido (não é um array ou muitos subscritos): \"%s\"\n",
+/*029*/  L"expressão inválida, assumido como zero\n",
+/*030*/  L"declaração composta não fechada no final do arquivo (começou na linha %d)\n",
+/*031*/  L"diretiva desconhecida\n",
+/*032*/  L"índice de array fora dos limites (variável \"%s\")\n",
+/*033*/  L"array deve ser indexado (variável \"%s\")\n",
+/*034*/  L"argumento não tem um valor padrão (argumento %d)\n",
+/*035*/  L"incompatibilidade de tipo de argumento (argumento %d)\n",
+/*036*/  L"declaração vazia\n",
+/*037*/  L"string inválida (possivelmente string não terminada)\n",
+/*038*/  L"caracteres extras na linha\n",
+/*039*/  L"símbolo constante não tem tamanho\n",
+/*040*/  L"rótulo \"case\" duplicado (valor %d)\n",
+/*041*/  L"ellipsis inválido, tamanho do array não é conhecido\n",
+/*042*/  L"combinação inválida de especificadores de classe\n",
+/*043*/  L"constante de caractere excede o intervalo para string compactada\n",
+/*044*/  L"parâmetros posicionais devem preceder todos os parâmetros nomeados\n",
+/*045*/  L"muitos argumentos de função\n",
+/*046*/  L"tamanho do array desconhecido (variável \"%s\")\n",
+/*047*/  L"tamanhos de array não correspondem, ou o array de destino é muito pequeno\n",
+/*048*/  L"dimensões do array não correspondem\n",
+/*049*/  L"continuação de linha inválida\n",
+/*050*/  L"intervalo inválido\n",
+/*051*/  L"subscrito inválido, use operadores \"[ ]\" nas dimensões principais\n",
+/*052*/  L"arrays multidimensionais devem ser totalmente inicializados\n",
+/*053*/  L"excedendo o número máximo de dimensões\n",
+/*054*/  L"chave de fechamento não correspondente (\"}\")\n",
+/*055*/  L"início do corpo da função sem cabeçalho de função\n",
+/*056*/  L"arrays, variáveis locais e argumentos de função não podem ser públicos (variável \"%s\")\n",
+/*057*/  L"expressão inacabada antes da diretiva do compilador\n",
+/*058*/  L"argumento duplicado; o mesmo argumento é passado duas vezes\n",
+/*059*/  L"argumento da função não pode ter um valor padrão (variável \"%s\")\n",
+/*060*/  L"múltiplas diretivas \"#else\" entre \"#if ... #endif\"\n",
+/*061*/  L"diretiva \"#elseif\" segue uma diretiva \"#else\"\n",
+/*062*/  L"número de operandos não se ajusta ao operador\n",
+/*063*/  L"tag de resultado da função do operador \"%s\" deve ser \"%s\"\n",
+/*064*/  L"não é possível alterar operadores pré-definidos\n",
+/*065*/  L"argumento da função pode ter apenas uma única tag (argumento %d)\n",
+/*066*/  L"argumento da função não pode ser um argumento por referência ou um array (argumento \"%s\")\n",
+/*067*/  L"variável não pode ser tanto uma referência quanto um array (variável \"%s\")\n",
+/*068*/  L"precisão de número racional inválida em #pragma\n",
+/*069*/  L"formato de número racional já definido\n",
+/*070*/  L"suporte a número racional não foi habilitado\n",
+/*071*/  L"operador definido pelo usuário deve ser declarado antes do uso (função \"%s\")\n",
+/*072*/  L"operador \"sizeof\" é inválido em símbolos \"function\"\n",
+/*073*/  L"argumento da função deve ser um array (argumento \"%s\")\n",
+/*074*/  L"padrão #define deve começar com um caractere alfabético\n",
+/*075*/  L"linha de entrada muito longa (após substituições)\n",
+/*076*/  L"erro de sintaxe na expressão, ou chamada de função inválida\n",
+/*077*/  L"codificação UTF-8 malformada, ou arquivo corrompido: %s\n",
+/*078*/  L"função usa tanto \"return\" quanto \"return <valor>\"\n",
+/*079*/  L"tipos de retorno inconsistentes (array & não-array)\n",
+/*080*/  L"símbolo desconhecido, ou não é um símbolo constante (símbolo \"%s\")\n",
+/*081*/  L"não é possível usar uma tag como valor padrão para um parâmetro de array indexado (símbolo \"%s\")\n",
+/*082*/  L"operadores definidos pelo usuário e funções nativas não podem ter estados\n",
+/*083*/  L"uma função ou variável pode pertencer a um único autômato (símbolo \"%s\")\n",
+/*084*/  L"conflito de estados: um dos estados já está atribuído a outra implementação (símbolo \"%s\")\n",
+/*085*/  L"nenhum estado definido para o símbolo \"%s\"\n",
+/*086*/  L"autômato desconhecido \"%s\"\n",
+/*087*/  L"estado desconhecido \"%s\" para o autômato \"%s\"\n",
+/*088*/  L"variáveis públicas e variáveis locais não podem ter estados (símbolo \"%s\")\n",
+/*089*/  L"variáveis de estado não podem ser inicializadas (símbolo \"%s\")\n",
+/*090*/  L"funções públicas não podem retornar arrays (símbolo \"%s\")\n",
+/*091*/  L"constante ambígua; substituição de tag é necessária (símbolo \"%s\")\n",
+/*092*/  L"funções não podem retornar arrays de tamanho desconhecido (símbolo \"%s\")\n",
+/*093*/  L"operador \"__addressof\" é inválido em expressões de pré-processador\n"
 };
 
-static char *fatalmsg[] = {
-/*100*/  "cannot read from file: \"%s\"\n",
-/*101*/  "cannot write to file: \"%s\"\n",
-/*102*/  "table overflow: \"%s\"\n",
-          /* table can be: loop table
-           *               literal table
-           *               staging buffer
-           *               option table (response file)
-           *               peephole optimizer table
+static wchar_t *fatalmsg[] = {
+/*100*/  L"não é possível ler do arquivo: \"%s\"\n",
+/*101*/  L"não é possível gravar no arquivo: \"%s\"\n",
+/*102*/  L"transbordamento da tabela: \"%s\"\n",
+          /* a tabela pode ser: tabela de loop
+           *               tabela de literais
+           *               buffer de estágio
+           *               tabela de opções (arquivo de resposta)
+           *               tabela de otimizador peephole
            */
-/*103*/  "insufficient memory\n",
-/*104*/  "invalid assembler instruction \"%s\"\n",
-/*105*/  "numeric overflow, exceeding capacity\n",
-/*106*/  "compiled script exceeds the maximum memory size (%ld bytes)\n",
-/*107*/  "too many error messages on one line\n",
-/*108*/  "codepage mapping file not found\n",
-/*109*/  "invalid path: \"%s\"\n",
-/*110*/  "assertion failed: %s\n",
-/*111*/  "user error: %s\n"
+/*103*/  L"memória insuficiente\n",
+/*104*/  L"instrução de assembler inválida \"%s\"\n",
+/*105*/  L"transbordamento numérico, excedendo a capacidade\n",
+/*106*/  L"script compilado excede o tamanho máximo de memória (%ld bytes)\n",
+/*107*/  L"muitos mensagens de erro em uma linha\n",
+/*108*/  L"arquivo de mapeamento de página de código não encontrado\n",
+/*109*/  L"caminho inválido: \"%s\"\n",
+/*110*/  L"falha na asserção: %s\n",
+/*111*/  L"erro do usuário: %s\n"
 };
 
-static char *warnmsg[] = {
-/*200*/  "symbol \"%s\" is truncated to %d characters\n",
-/*201*/  "redefinition of constant/macro (symbol \"%s\")\n",
-/*202*/  "number of arguments does not match definition\n",
-/*203*/  "symbol is never used: \"%s\"\n",
-/*204*/  "symbol is assigned a value that is never used: \"%s\"\n",
-/*205*/  "redundant code: constant expression is zero\n",
-/*206*/  "redundant test: constant expression is non-zero\n",
-/*207*/  "unknown #pragma\n",
-/*208*/  "function with tag result used before definition, forcing reparse\n",
-/*209*/  "function \"%s\" should return a value\n",
-/*210*/  "possible use of symbol before initialization: \"%s\"\n",
-/*211*/  "possibly unintended assignment\n",
-/*212*/  "possibly unintended bitwise operation\n",
-/*213*/  "tag mismatch: expected %s %s but found %s\n",
-/*214*/  "possibly a \"const\" array argument was intended: \"%s\"\n",
-/*215*/  "expression has no effect\n",
-/*216*/  "nested comment\n",
-/*217*/  "loose indentation\n",
-/*218*/  "old style prototypes used with optional semicolumns\n",
-/*219*/  "local variable \"%s\" shadows a variable at a preceding level\n",
-/*220*/  "expression with tag override must appear between parentheses\n",
-/*221*/  "label name \"%s\" shadows tag name\n",
-/*222*/  "number of digits exceeds rational number precision\n",
-/*223*/  "redundant \"sizeof\": argument size is always 1 (symbol \"%s\")\n",
-/*224*/  "indeterminate array size in \"sizeof\" expression (symbol \"%s\")\n",
-/*225*/  "unreachable code\n",
-/*226*/  "a variable is assigned to itself (symbol \"%s\")\n",
-/*227*/  "more initiallers than enum fields\n",
-/*228*/  "length of initialler exceeds size of the enum field\n",
-/*229*/  "index tag mismatch (symbol \"%s\"): expected tag %s but found %s\n",
-/*230*/  "no implementation for state \"%s\" in function \"%s\", no fall-back\n",
-/*231*/  "state specification on forward declaration is ignored\n",
-/*232*/  "output file is written, but with compact encoding disabled\n",
-/*233*/  "state variable \"%s\" shadows a global variable\n",
-/*234*/  "function is deprecated (symbol \"%s\") %s\n",
-/*235*/  "public function lacks forward declaration (symbol \"%s\")\n",
-/*236*/  "unknown parameter in substitution (incorrect #define pattern)\n",
-/*237*/  "user warning: %s\n",
-/*238*/  "meaningless combination of class specifiers (%s)\n",
-/*239*/  "literal array/string passed to a non-const parameter\n"
+static wchar_t *warnmsg[] = {
+/*200*/  L"símbolo \"%s\" foi truncado para %d caracteres\n",
+/*201*/  L"redefinição de constante/macros (símbolo \"%s\")\n",
+/*202*/  L"número de argumentos não corresponde à definição\n",
+/*203*/  L"símbolo nunca é usado: \"%s\"\n",
+/*204*/  L"símbolo recebe um valor que nunca é usado: \"%s\"\n",
+/*205*/  L"código redundante: expressão constante é zero\n",
+/*206*/  L"teste redundante: expressão constante é diferente de zero\n",
+/*207*/  L"#pragma desconhecido\n",
+/*208*/  L"função com tag de resultado usada antes da definição, forçando reanálise\n",
+/*209*/  L"função \"%s\" deve retornar um valor\n",
+/*210*/  L"uso possível de símbolo antes da inicialização: \"%s\"\n",
+/*211*/  L"atribuição possivelmente não intencional\n",
+/*212*/  L"operação bit a bit possivelmente não intencional\n",
+/*213*/  L"incompatibilidade de tags: esperado %s %s mas encontrado %s\n",
+/*214*/  L"possivelmente um argumento de array \"const\" foi pretendido: \"%s\"\n",
+/*215*/  L"expressão não tem efeito\n",
+/*216*/  L"comentário aninhado\n",
+/*217*/  L"indentação solta\n",
+/*218*/  L"protótipos de estilo antigo usados com pontos e vírgulas opcionais\n",
+/*219*/  L"variável local \"%s\" oculta uma variável em um nível anterior\n",
+/*220*/  L"expressão com substituição de tag deve aparecer entre parênteses\n",
+/*221*/  L"nome de rótulo \"%s\" oculta o nome da tag\n",
+/*222*/  L"número de dígitos excede a precisão do número racional\n",
+/*223*/  L"redundante \"sizeof\": tamanho do argumento é sempre 1 (símbolo \"%s\")\n",
+/*224*/  L"tamanho de array indeterminado na expressão \"sizeof\" (símbolo \"%s\")\n",
+/*225*/  L"código inacessível\n",
+/*226*/  L"uma variável é atribuída a ela mesma (símbolo \"%s\")\n",
+/*227*/  L"mais inicializadores do que campos de enumeração\n",
+/*228*/  L"comprimento do inicializador excede o tamanho do campo de enumeração\n",
+/*229*/  L"incompatibilidade de tag de índice (símbolo \"%s\"): tag esperada %s mas encontrada %s\n",
+/*230*/  L"nenhuma implementação para o estado \"%s\" na função \"%s\", sem fallback\n",
+/*231*/  L"especificação de estado na declaração antecipada é ignorada\n",
+/*232*/  L"arquivo de saída é gravado, mas com codificação compacta desativada\n",
+/*233*/  L"variável de estado \"%s\" oculta uma variável global\n",
+/*234*/  L"função está obsoleta (símbolo \"%s\") %s\n",
+/*235*/  L"função pública carece de declaração antecipada (símbolo \"%s\")\n",
+/*236*/  L"parâmetro desconhecido na substituição (padrão #define incorreto)\n",
+/*237*/  L"aviso do usuário: %s\n",
+/*238*/  L"combinação sem sentido de especificadores de classe (%s)\n",
+/*239*/  L"array/string literal passado para um parâmetro não-const\n"
 };
 
-static char *noticemsg[] = {
-/*001*/  "; did you mean \"%s\"?\n",
-/*002*/  "; state variable out of scope\n"
+static wchar_t *noticemsg[] = {
+/*001*/  L"; você quis dizer \"%s\"?\n",
+/*002*/  L"; variável de estado fora do escopo\n"
 };
 
 #define NUM_WARNINGS    (sizeof warnmsg / sizeof warnmsg[0])
@@ -229,12 +230,12 @@ static int errwarn;
  */
 SC_FUNC int error(long number,...)
 {
-static char *prefix[3]={ "error", "fatal error", "warning" };
+static wchar_t *prefix[3]={ L"erro", L"erro fatal", L"aviso" };
 static int lastline,errorcount;
 static short lastfile;
-  char *msg,*pre;
+  wchar_t *msg,*pre;
   va_list argptr;
-  char string[128];
+  wchar_t string[128];
   int notice;
 
   /* split the error field between the real error/warning number and an optional
@@ -286,8 +287,8 @@ static short lastfile;
 
   if (notice!=0) {
     assert(notice>0 && notice<(1+sizeof(noticemsg)/sizeof(noticemsg[0])) && noticemsg[notice-1][0]!='\0');
-    strcpy(string,msg);
-    strcpy(&string[strlen(string)-1],noticemsg[notice-1]);
+    wcscpy(string,msg);
+    wcscpy(&string[wcslen(string)-1],noticemsg[notice-1]);
     msg=string;
   } /* if */
 
@@ -300,7 +301,7 @@ static short lastfile;
   va_start(argptr,number);
   if (errfname[0]=='\0') {
     int start=(errstart==errline) ? -1 : errstart;
-    if (pc_error((int)number,msg,inpfname,start,errline,argptr)) {
+    if (pc_werror((int)number,msg,inpfname,start,errline,argptr)) {
       if (outf!=NULL) {
         pc_closeasm(outf,TRUE);
         outf=NULL;
@@ -311,10 +312,10 @@ static short lastfile;
     FILE *fp=fopen(errfname,"a");
     if (fp!=NULL) {
       if (errstart>=0 && errstart!=errline)
-        fprintf(fp,"%s(%d -- %d) : %s %03d: ",inpfname,errstart,errline,pre,(int)number);
+        fwprintf(fp,L"%s(%d -- %d) : %ls %03d: ",inpfname,errstart,errline,pre,(int)number);
       else
-        fprintf(fp,"%s(%d) : %s %03d: ",inpfname,errline,pre,(int)number);
-      vfprintf(fp,msg,argptr);
+        fwprintf(fp,L"%s(%d) : %ls %03d: ",inpfname,errline,pre,(int)number);
+      vfwprintf(fp,msg,argptr);
       fclose(fp);
     } /* if */
   } /* if */
@@ -323,7 +324,7 @@ static short lastfile;
   if ((number>=100 && number<200) || errnum>25){
     if (errfname[0]=='\0') {
       va_start(argptr,number);
-      pc_error(0,"\nCompilation aborted.\n\n",NULL,0,0,argptr);
+      pc_werror(0, L"\nCompilação abortada.\n\n", NULL, 0, 0, argptr);
       va_end(argptr);
     } /* if */
     if (outf!=NULL) {

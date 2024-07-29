@@ -31,6 +31,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <wchar.h>
 
 #if defined	__WIN32__ || defined _WIN32 || defined __MSDOS__
   #include <conio.h>
@@ -199,6 +200,18 @@ int pc_printf(const char *message,...)
   return ret;
 }
 
+int pc_wprintf(const wchar_t *message,...)
+{
+  int ret;
+  va_list argptr;
+
+  va_start(argptr,message);
+  ret=vwprintf(message,argptr);
+  va_end(argptr);
+
+  return ret;
+}
+
 /* pc_error()
  * Called for producing error output.
  *    number      the error number (as documented in the manual)
@@ -215,7 +228,7 @@ int pc_printf(const char *message,...)
  */
 int pc_error(int number,char *message,char *filename,int firstline,int lastline,va_list argptr)
 {
-static char *prefix[3]={ "error", "fatal error", "warning" };
+static char *prefix[3]={ "erro", "erro fatal", "aviso" };
 
   if (number!=0) {
     char *pre;
@@ -230,6 +243,27 @@ static char *prefix[3]={ "error", "fatal error", "warning" };
       fprintf(stderr,"%s(%d) : %s %03d: ",filename,lastline,pre,number);
   } /* if */
   vfprintf(stderr,message,argptr);
+  fflush(stderr);
+  return 0;
+}
+
+int pc_werror(int number,wchar_t *message,char *filename,int firstline,int lastline,va_list argptr)
+{
+static wchar_t *prefix[3]={ L"erro", L"erro fatal", L"aviso" };
+
+  if (number!=0) {
+    wchar_t *pre;
+
+    pre=prefix[number/100];
+    if (number>=200 && pc_geterrorwarnings()){
+      pre=prefix[0];
+    }
+    if (firstline>=0)
+      fwprintf(stderr,L"%s(%d -- %d) : %ls %03d: ",filename,firstline,lastline,pre,number);
+    else
+      fwprintf(stderr,L"%s(%d) : %ls %03d: ",filename,lastline,pre,number);
+  } /* if */
+  vfwprintf(stderr,message,argptr);
   fflush(stderr);
   return 0;
 }
@@ -1467,7 +1501,8 @@ static void setconfig(char *root)
 
 static void setcaption(void)
 {
-  pc_printf("Pawn compiler " VERSION_STR "\t \t \tCopyright (c) 1997-2006, ITB CompuPhase\n\n");
+  pc_printf("Pawn compiler " VERSION_STR "\t \t \tCopyright (c) 1997-2006, ITB CompuPhase\n");
+  pc_wprintf(L"Traduçao PT-BR: by SwitchSpectre & guil2k7\n\n");
 }
 
 static void about(void)

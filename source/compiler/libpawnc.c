@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <wchar.h>
 #include "sc.h"
 
 #if defined PAWNC_DLL
@@ -146,6 +147,39 @@ static char *prefix[3]={ "error", "fatal error", "warning" };
   vfprintf(stderr,message,argptr);
   fflush(stderr);
   return 0;
+}
+
+int pc_werror(int number,wchar_t *message,char *filename,int firstline,int lastline,va_list argptr)
+{
+static wchar_t *prefix[3]={ L"erro", L"erro fatal", L"aviso" };
+
+  if (number!=0) {
+    wchar_t *pre;
+
+    pre=prefix[number/100];
+    if (number>=200 && pc_geterrorwarnings()){
+      pre=prefix[0];
+    }
+    if (firstline>=0)
+      fwprintf(stderr,L"%s(%d -- %d) : %ls %03d: ",filename,firstline,lastline,pre,number);
+    else
+      fwprintf(stderr,L"%s(%d) : %ls %03d: ",filename,lastline,pre,number);
+  } /* if */
+  vfwprintf(stderr,message,argptr);
+  fflush(stderr);
+  return 0;
+}
+
+int pc_wprintf(const wchar_t *message,...)
+{
+  int ret;
+  va_list argptr;
+
+  va_start(argptr,message);
+  ret=vwprintf(message,argptr);
+  va_end(argptr);
+
+  return ret;
 }
 
 /* pc_opensrc()

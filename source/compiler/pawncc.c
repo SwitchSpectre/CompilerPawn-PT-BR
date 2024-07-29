@@ -24,8 +24,10 @@
  */
 
 #include "sc.h"
+#include <locale.h>
 
 int main(int argc, char *argv[])
 {
+  setlocale(LC_ALL, "");
   return pc_compile(argc,argv);
 }
