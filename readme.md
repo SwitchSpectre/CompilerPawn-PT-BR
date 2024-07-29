@@ -2,7 +2,9 @@
 
 [![Status de Construção][build_status_linux]][build_linux]
 [![Status de Construção - Windows][build_status_win]][build_win]
-
+## Novidades
+ Esta Versao foi traduzida para Portugues 
+    Em Breve mais novidades
 ## O que é
 
 Esta é uma versão modificada do compilador Pawn 3.2.3664 com muitas correções de bugs e melhorias.
